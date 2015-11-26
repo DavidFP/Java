@@ -11,8 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
-import jxl.write.DateTime;
-import jxl.write.WritableCell;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
@@ -44,9 +42,8 @@ public class TestExcel {
             ///Creamos el libro con posibilidad de escritura
             WritableWorkbook salida = Workbook.createWorkbook(new File("E:\\salida.xls"));
             WritableSheet ws = salida.createSheet("salida", 0); 
-            ws.setName("output1");
+            ws.setName("output2");
         
-            
         } catch (IOException | BiffException ex) {
             Logger.getLogger(TestExcel.class.getName()).log(Level.SEVERE, null, ex);
         }
