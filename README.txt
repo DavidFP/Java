@@ -7,4 +7,6 @@ PROYECTOS INCLUIDOS:
 
 -FicherosEnDirectorio. Aplicación que implementa un monitor java para la monitorización de un directorio y ejecuta una serie de acciones adicionales
 
--LectorXML. Aplicación que lee datos desde un fichero xml y los usa para la configuración del proyecto
+-LectorXML. Aplicación que lee datos desde un fichero xml y los usa para la configuración del proyecto.
+
+-OperacionesFicheros. Aplicación que hace operaciones básicas con ficheros.
