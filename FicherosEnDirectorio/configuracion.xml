@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    FICHERO DE CONFIGURACION XML,
+    DIRECTORIO DE ENTRADA 
+    DIRECTORIO DE SALIDA
+-->
+<PARAMETROS>
+    <PARAMETRO>
+        <!--CORRESPONDE AL NOMBRE DEL FICHERO CARGADO A LA PLATAFORMA WEB-->
+        <NOMBREFICHERO>FICHERO1234</NOMBREFICHERO>
+        <!--DIRECTORIO DE SUBIDA DE LOS FICHEROS EN LA PLATAFORMA-->
+        <DIR_ENTRADA>E:\ENTRADAS</DIR_ENTRADA>
+        <!--DIRECTORIO DE SALIDAD DE LOS FICHEROS PROCESADOS POR EL ALGORITMO-->
+        <DIR_SALIDA>E:\SALIDAS</DIR_SALIDA>
+        
+        <!-- COMANDOS DE LOS FICHEROS -->
+
+        <!--  
+        PROCESO DE EXCEL  C:\Program Files\Dassault Systemes\B19\win_b64\code\bin\CNEXT.exe -macro E:\MACROS\MacroFinal.catvba Module_initial 
+        -->
+        <COMANDOEXCEL>
+            C:\Windows\System32\calc.exe
+        </COMANDOEXCEL>
+        <COMANDOSTL>
+            C:\Windows\System32\notepad.exe
+        </COMANDOSTL>
+
+        <COLA>E:\ENTRADAS\COLA.CSV</COLA>
+
+    </PARAMETRO>  
+</PARAMETROS>
