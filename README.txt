@@ -3,3 +3,5 @@ REPOSITORIO JAVA
 En este repositorio se incluyen distintos proyectos en Java, están creados
 en proyectos para netbeans. 
 ------------------------------------------------------------------------
+PROYECTOS INCLUIDOS:
+-FicherosEnDirectorio. Aplicación que implementa un monitor java para la monitorización de un directorio y ejecuta una serie de acciones adicionales
