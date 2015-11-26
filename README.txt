@@ -10,3 +10,5 @@ PROYECTOS INCLUIDOS:
 -LectorXML. Aplicación que lee datos desde un fichero xml y los usa para la configuración del proyecto.
 
 -OperacionesFicheros. Aplicación que hace operaciones básicas con ficheros.
+
+-testExcel. Aplicación para la lectura de ficheros excel y procesado de datos. 
