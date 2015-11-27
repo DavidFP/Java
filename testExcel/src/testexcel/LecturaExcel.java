@@ -72,10 +72,19 @@ public class LecturaExcel {
             /**
              * Obtiene la primera hoja del libro
              */
-            HSSFSheet sheet = workbook.getSheetAt(0);
+            int st = workbook.getNumberOfSheets();
+            System.out.println("El Libro dispone de: " + st + " hojas");
+
+            for (int i = 0; i < st; i++) {
+                System.out.println("Hoja: " + workbook.getSheetName(i));
+            }
+            int i=0;
+            while(i<st){
+            HSSFSheet sheet = workbook.getSheetAt(i);
 
             int totalRow = sheet.getPhysicalNumberOfRows();
-            System.out.println("Num. Filas: " + totalRow);
+            System.out.println("HOJA " + (i+1));
+            System.out.println("Num. Filas: " + totalRow );
             /**
              * Cuando hay un objeto en la hoja, lo manejamos con un iterador
              * para la hoja con rows y para cada row con sus Cells asociadas.
@@ -92,6 +101,8 @@ public class LecturaExcel {
                     data.add(cell);
                 }
                 sheetData.add(data);
+            }
+            i++;
             }
             
         } catch (IOException e) {
