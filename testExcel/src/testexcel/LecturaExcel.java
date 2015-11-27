@@ -5,11 +5,8 @@ package testexcel;
  */
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,17 +21,13 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
 
 /**
  * Aplicación para la lectura de ficheros excel desde java
  *
  * @author david.fernandez
  */
-public class TestExcel {
+public class LecturaExcel {
 
     /**
      * Función que lee el número de hojas de un excel pasado cómo parámetros y
@@ -62,14 +55,14 @@ public class TestExcel {
             ws.setName("output2");
 
         } catch (IOException | BiffException ex) {
-            Logger.getLogger(TestExcel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LecturaExcel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void leerExcelXls(String rutaxls){
+    public static List leerExcelXls(String rutaxls) {
         List sheetData = new ArrayList();
         InputStream is = null;
-        try {   
+        try {
             InputStream fis = new FileInputStream(new File(rutaxls));
             /**
              * Crea un objeto excel desde el sistema de ficheros
@@ -80,13 +73,12 @@ public class TestExcel {
              * Obtiene la primera hoja del libro
              */
             HSSFSheet sheet = workbook.getSheetAt(0);
-         
+
             int totalRow = sheet.getPhysicalNumberOfRows();
             System.out.println("Num. Filas: " + totalRow);
             /**
-             * Cuando hay un objeto en la hoja, lo manejamos con un
-             * iterador para la hoja con rows y para cada row con sus
-             * Cells asociadas. 
+             * Cuando hay un objeto en la hoja, lo manejamos con un iterador
+             * para la hoja con rows y para cada row con sus Cells asociadas.
              * Almacenamos los datos en un ArrayList que podemos manejar
              */
             Iterator rows = sheet.rowIterator();
@@ -101,19 +93,17 @@ public class TestExcel {
                 }
                 sheetData.add(data);
             }
+            
         } catch (IOException e) {
-            e.printStackTrace();
         }
-       showExelData(sheetData);
+        //showExelData(sheetData);
+        return sheetData;
     }
-    
 
-    
-    
     /**
-     * Función que muestra una colección de valores almacenados de
-     * una celda.
-     * @param   sheetData , lista de datos de la hoja
+     * Función que muestra una colección de valores almacenados de una celda.
+     *
+     * @param sheetData , lista de datos de la hoja
      */
     private static void showExelData(List sheetData) {
         /**
@@ -124,15 +114,12 @@ public class TestExcel {
             for (int j = 0; j < list.size(); j++) {
                 Cell cell = (Cell) list.get(j);
                 //Tratamiento en caso de ser de tipo numérico
-                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) 
-                {
+                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                     System.out.print(cell.getNumericCellValue() + " ");
-                } else if (cell.getCellType() == Cell.CELL_TYPE_STRING) 
-                { //Tratamiento en caso de ser String
-                    System.out.print(cell.getRichStringCellValue()+ " ");
-                } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN)
-                { //Tratamiento en caso de ser Booleano
-                    System.out.print(cell.getBooleanCellValue()+ " ");
+                } else if (cell.getCellType() == Cell.CELL_TYPE_STRING) { //Tratamiento en caso de ser String
+                    System.out.print(cell.getRichStringCellValue() + " ");
+                } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) { //Tratamiento en caso de ser Booleano
+                    System.out.print(cell.getBooleanCellValue() + " ");
                 }
                 if (j < list.size() - 1) {
                     System.out.print(" , ");
@@ -140,23 +127,6 @@ public class TestExcel {
             }
             System.out.println("");
         }
-    }
-
-    /**
-     * Función principal del programa
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-
-        String ruta = "E:\\jtest.xls";
-        File fich = new File(ruta);
-        leerExcelJXL(fich);
-
-        String rutaxls = "E:\\test.xls";
-        leerExcelXls(rutaxls);
-  
     }
 
 }
