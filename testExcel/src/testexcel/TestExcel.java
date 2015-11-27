@@ -107,28 +107,7 @@ public class TestExcel {
        showExelData(sheetData);
     }
     
-//    public static void leerExcelPOI2() throws FileNotFoundException{
-//        try {
-//            InputStream inp = new FileInputStream("workbook.xls");
-//            //InputStream inp = new FileInputStream("workbook.xlsx");
-//            
-//            Workbook wb = (Workbook) WorkbookFactory.create(inp);
-//            Sheet sheet = wb.getSheetAt(0);
-//            Row row = sheet.getRow(2);
-//            Cell cell = row.getCell(3);
-//            if (cell == null)
-//                cell = row.createCell(3);
-//            cell.setCellType(Cell.CELL_TYPE_STRING);
-//            cell.setCellValue("a test");
-//            
-//            try ( // Write the output to a file
-//                    FileOutputStream fileOut = new FileOutputStream("workbook.xls")) {
-//                wb.write(fileOut);
-//            }
-//        }   catch (IOException | InvalidFormatException ex) {
-//            Logger.getLogger(TestExcel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+
     
     
     /**
@@ -177,7 +156,7 @@ public class TestExcel {
 
         String rutaxls = "E:\\test.xls";
         leerExcelXls(rutaxls);
-
+  
     }
 
 }
