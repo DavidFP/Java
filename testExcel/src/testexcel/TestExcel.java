@@ -5,7 +5,11 @@ package testexcel;
  */
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +24,10 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+
 
 /**
  * Aplicación para la lectura de ficheros excel desde java
@@ -58,17 +66,23 @@ public class TestExcel {
         }
     }
 
-    public static void leerExcelPOI(String rutaPoi) throws IOException {
+    public static void leerExcelXls(String rutaxls){
         List sheetData = new ArrayList();
-        try (FileInputStream fis = new FileInputStream(rutaPoi)) {
+        InputStream is = null;
+        try {   
+            InputStream fis = new FileInputStream(new File(rutaxls));
             /**
              * Crea un objeto excel desde el sistema de ficheros
              */
             HSSFWorkbook workbook = new HSSFWorkbook(fis);
+
             /**
              * Obtiene la primera hoja del libro
              */
             HSSFSheet sheet = workbook.getSheetAt(0);
+         
+            int totalRow = sheet.getPhysicalNumberOfRows();
+            System.out.println("Num. Filas: " + totalRow);
             /**
              * Cuando hay un objeto en la hoja, lo manejamos con un
              * iterador para la hoja con rows y para cada row con sus
@@ -78,20 +92,44 @@ public class TestExcel {
             Iterator rows = sheet.rowIterator();
             while (rows.hasNext()) {
                 HSSFRow row = (HSSFRow) rows.next();
-
                 Iterator cells = row.cellIterator();
                 List data = new ArrayList();
                 while (cells.hasNext()) {
                     HSSFCell cell = (HSSFCell) cells.next();
-                    System.out.println("Añadiendo Celda: " + cell.toString());
+                    //System.out.println("Añadiendo Celda: " + cell.toString());
                     data.add(cell);
                 }
                 sheetData.add(data);
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
-        showExelData(sheetData);
+       showExelData(sheetData);
     }
+    
+//    public static void leerExcelPOI2() throws FileNotFoundException{
+//        try {
+//            InputStream inp = new FileInputStream("workbook.xls");
+//            //InputStream inp = new FileInputStream("workbook.xlsx");
+//            
+//            Workbook wb = (Workbook) WorkbookFactory.create(inp);
+//            Sheet sheet = wb.getSheetAt(0);
+//            Row row = sheet.getRow(2);
+//            Cell cell = row.getCell(3);
+//            if (cell == null)
+//                cell = row.createCell(3);
+//            cell.setCellType(Cell.CELL_TYPE_STRING);
+//            cell.setCellValue("a test");
+//            
+//            try ( // Write the output to a file
+//                    FileOutputStream fileOut = new FileOutputStream("workbook.xls")) {
+//                wb.write(fileOut);
+//            }
+//        }   catch (IOException | InvalidFormatException ex) {
+//            Logger.getLogger(TestExcel.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+    
     
     /**
      * Función que muestra una colección de valores almacenados de
@@ -109,16 +147,16 @@ public class TestExcel {
                 //Tratamiento en caso de ser de tipo numérico
                 if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) 
                 {
-                    System.out.print(cell.getNumericCellValue());
+                    System.out.print(cell.getNumericCellValue() + " ");
                 } else if (cell.getCellType() == Cell.CELL_TYPE_STRING) 
                 { //Tratamiento en caso de ser String
-                    System.out.print(cell.getRichStringCellValue());
+                    System.out.print(cell.getRichStringCellValue()+ " ");
                 } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN)
                 { //Tratamiento en caso de ser Booleano
-                    System.out.print(cell.getBooleanCellValue());
+                    System.out.print(cell.getBooleanCellValue()+ " ");
                 }
                 if (j < list.size() - 1) {
-                    System.out.print(", ");
+                    System.out.print(" , ");
                 }
             }
             System.out.println("");
@@ -137,8 +175,8 @@ public class TestExcel {
         File fich = new File(ruta);
         leerExcelJXL(fich);
 
-        String rutaPoi = "test.xlsx";
-        leerExcelPOI(rutaPoi);
+        String rutaxls = "E:\\test.xls";
+        leerExcelXls(rutaxls);
 
     }
 
