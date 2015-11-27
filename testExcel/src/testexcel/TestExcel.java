@@ -6,13 +6,23 @@
 package testexcel;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 
 
 /**
@@ -26,7 +36,7 @@ public class TestExcel {
      * y muestra por pantalla el número de hojas y el nombre de estas
      * @param archivo , con la ruta del archivo Excel
      **/
-    public static void leerExcel(File archivo){
+    public static void leerExcelJXL(File archivo){
         try {
             Workbook libro = Workbook.getWorkbook(archivo);
             //Mostramos información de libro
@@ -49,15 +59,76 @@ public class TestExcel {
         }
     }
     
+    public static void leerExcelPOI(String rutaPoi) throws IOException{
+        List sheetData = new ArrayList();
+        try (FileInputStream fis = new FileInputStream(rutaPoi)) {
+			//
+			// Create an excel workbook from the file system.
+			//
+			HSSFWorkbook workbook = new HSSFWorkbook(fis);
+			//
+			// Get the first sheet on the workbook.
+			//
+			HSSFSheet sheet = workbook.getSheetAt(0);
+			//
+			// When we have a sheet object in hand we can iterator on
+			// each sheet's rows and on each row's cells. We store the
+			// data read on an ArrayList so that we can printed the
+			// content of the excel to the console.
+			//
+			Iterator rows = sheet.rowIterator();
+			while (rows.hasNext()) {
+				HSSFRow row = (HSSFRow) rows.next();
+				
+				Iterator cells = row.cellIterator();
+				List data = new ArrayList();
+				while (cells.hasNext()) {
+					HSSFCell cell = (HSSFCell) cells.next();
+				//	System.out.println("Añadiendo Celda: " + cell.toString());
+					data.add(cell);
+				}
+				sheetData.add(data);
+			}
+		} catch (IOException e) {
+		}
+		showExelData(sheetData);
+	}
+
+ private static void showExelData(List sheetData) {
+        //
+        // Iterates the data and print it out to the console.
+        //
+        for (Object sheetData1 : sheetData) {
+            List list = (List) sheetData1;
+            for (int j = 0; j < list.size(); j++) {
+                Cell cell = (Cell) list.get(j);
+                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                    System.out.print(cell.getNumericCellValue());
+                } else if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+                    System.out.print(cell.getRichStringCellValue());
+                } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+                    System.out.print(cell.getBooleanCellValue());
+                }
+                if (j < list.size() - 1) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println("");
+        }
+}   
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // TODO code application logic here
         
         String ruta="E:\\jtest.xls";
         File fich = new File(ruta);
-        leerExcel(fich);
+        leerExcelJXL(fich);
+        
+        String rutaPoi = "test.xlsx";
+        leerExcelPOI(rutaPoi);
+        
     }
     
 }
