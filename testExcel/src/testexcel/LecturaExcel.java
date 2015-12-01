@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,10 +43,10 @@ public class LecturaExcel {
             //Mostramos información de libro
             int numHojas = libro.getNumberOfSheets();
             String[] hojas = libro.getSheetNames();
-            System.out.println("Número de hojas: " + numHojas);
-            for (String hoja : hojas) {
-                System.out.println("Hoja: " + hoja);
-            }
+//            System.out.println("Número de hojas: " + numHojas);
+//            for (String hoja : hojas) {
+//                System.out.println("Hoja: " + hoja);
+//            }
             //Ahora vamos a crear un nuevo fichero xls y le vamos a copiar 
             //algunos elementos del original. 
 
@@ -57,6 +58,88 @@ public class LecturaExcel {
         } catch (IOException | BiffException ex) {
             Logger.getLogger(LecturaExcel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static HashSet XLStoHASHSET(String ruta) {
+        //Estructura de datos donde se almacenan las filas
+        HashSet<Articulo> hs = new HashSet<Articulo>();
+//        Articulo articulo1 = new Articulo(1, "Clamping Plate", "E100/E2");
+//        Articulo articulo2 = new Articulo(2, "sdf", "E220/al");
+//        hs.add(articulo1);
+//        hs.add(articulo2);
+
+        try {
+            //creamos el file input stream del fichero de entrada de los datos
+            InputStream fis = new FileInputStream(new File(ruta));
+
+            /**
+             * Crea un objeto excel desde el sistema de ficheros
+             */
+            HSSFWorkbook workbook = new HSSFWorkbook(fis);
+
+            /**
+             * Obtiene la primera hoja del libro
+             */
+            int numHojas = workbook.getNumberOfSheets();
+            int i = 0;
+            //Exploramos todas las hojas del libro
+            while (i < numHojas) {
+                HSSFSheet sheet = workbook.getSheetAt(i);
+
+                //Muestra la hoja actual en la que estamos
+                System.out.println("HOJA " + (i + 1));
+
+                //Obtiene el número total de celdas
+                int totalRow = sheet.getPhysicalNumberOfRows();
+                System.out.println("Num. Filas: " + totalRow);
+
+                /**
+                 * ALTERNATIVA DE RECORRER DE FIN A INICIO LA HOJA
+                 */
+                int ultima = sheet.getLastRowNum();
+                //Se establece el límite a 88 ya que es la celda donde comienza
+                //siempre el resumen del BOM de materiales
+                for (int u = ultima; u > 88; u--) {
+                    HSSFRow row = sheet.getRow(u);
+                   // System.out.println(row.getRowNum());
+                    String quantity = (String) row.getCell(0).toString();
+                    float q = Float.parseFloat(quantity);
+                    String partNum = row.getCell(1).toString();
+                    String nomenclature = row.getCell(2).toString();
+                    Articulo art = new Articulo(q, partNum, nomenclature);
+                    hs.add(art);
+
+                        //System.out.println("Elemento añadido " + u);
+                    //System.out.println("->"+ art.toString() + "<-");
+//                        System.out.println("COL A: " + row.getCell(0));
+//                        System.out.println("COL B: " + row.getCell(1));
+//                        System.out.println("COL C: " + row.getCell(2));
+                }
+
+                /**
+                 * Cuando hay un objeto en la hoja, lo manejamos con un iterador
+                 * para la hoja con rows y para cada row con sus Cells
+                 * asociadas. Almacenamos los datos en un ArrayList que podemos
+                 * manejar
+                 */
+//                    Iterator rows = sheet.rowIterator();
+//                    while (rows.hasNext()) {
+//                        HSSFRow row = (HSSFRow) rows.next();
+//                        Iterator cells = row.cellIterator();
+//                        List data = new ArrayList();
+//                        while (cells.hasNext()) {
+//                            HSSFCell cell = (HSSFCell) cells.next();
+//                            //System.out.println("Añadiendo Celda: " + cell.toString());
+//                            data.add(cell);
+//                        }
+//                     //   sheetData.add(data);
+//                    }
+                i++;
+            }
+        } catch (IOException e) {
+        }
+
+        return hs;
     }
 
     public static List leerExcelXls(String rutaxls) {
@@ -72,39 +155,45 @@ public class LecturaExcel {
             /**
              * Obtiene la primera hoja del libro
              */
-            int st = workbook.getNumberOfSheets();
-            System.out.println("El Libro dispone de: " + st + " hojas");
-
-            for (int i = 0; i < st; i++) {
+            int numHojas = workbook.getNumberOfSheets();
+            System.out.println("El Libro dispone de: " + numHojas + " hojas");
+            for (int i = 0; i < numHojas; i++) {
                 System.out.println("Hoja: " + workbook.getSheetName(i));
             }
-            int i=0;
-            while(i<st){
-            HSSFSheet sheet = workbook.getSheetAt(i);
+            int i = 0;
+            while (i < numHojas) {
+                HSSFSheet sheet = workbook.getSheetAt(i);
 
-            int totalRow = sheet.getPhysicalNumberOfRows();
-            System.out.println("HOJA " + (i+1));
-            System.out.println("Num. Filas: " + totalRow );
-            /**
-             * Cuando hay un objeto en la hoja, lo manejamos con un iterador
-             * para la hoja con rows y para cada row con sus Cells asociadas.
-             * Almacenamos los datos en un ArrayList que podemos manejar
-             */
-            Iterator rows = sheet.rowIterator();
-            while (rows.hasNext()) {
-                HSSFRow row = (HSSFRow) rows.next();
-                Iterator cells = row.cellIterator();
-                List data = new ArrayList();
-                while (cells.hasNext()) {
-                    HSSFCell cell = (HSSFCell) cells.next();
-                    //System.out.println("Añadiendo Celda: " + cell.toString());
-                    data.add(cell);
+                int totalRow = sheet.getPhysicalNumberOfRows();
+                System.out.println("HOJA " + (i + 1));
+                System.out.println("Num. Filas: " + totalRow);
+                int ultimaFila = sheet.getLastRowNum();
+                System.out.println("Ultima fila: " + ultimaFila);
+
+                for (int r = ultimaFila; r > 88; r--) {
+
                 }
-                sheetData.add(data);
+
+                /**
+                 * Cuando hay un objeto en la hoja, lo manejamos con un iterador
+                 * para la hoja con rows y para cada row con sus Cells
+                 * asociadas. Almacenamos los datos en un ArrayList que podemos
+                 * manejar
+                 */
+                Iterator rows = sheet.rowIterator();
+                while (rows.hasNext()) {
+                    HSSFRow row = (HSSFRow) rows.next();
+                    Iterator cells = row.cellIterator();
+                    List data = new ArrayList();
+                    while (cells.hasNext()) {
+                        HSSFCell cell = (HSSFCell) cells.next();
+                        //System.out.println("Añadiendo Celda: " + cell.toString());
+                        data.add(cell);
+                    }
+                    sheetData.add(data);
+                }
+                i++;
             }
-            i++;
-            }
-            
         } catch (IOException e) {
         }
         //showExelData(sheetData);
@@ -114,25 +203,25 @@ public class LecturaExcel {
     /**
      * Función que muestra una colección de valores almacenados de una celda.
      *
-     * @param sheetData , lista de datos de la hoja
+     * @param datosHoja , lista de datos de la hoja
      */
-    private static void showExelData(List sheetData) {
+    private static void showExelData(List datosHoja) {
         /**
          * Itera y muestra por consola los datos
          */
-        for (Object sheetData1 : sheetData) {
-            List list = (List) sheetData1;
-            for (int j = 0; j < list.size(); j++) {
-                Cell cell = (Cell) list.get(j);
+        for (Object elemento : datosHoja) {
+            List filas = (List) elemento;
+            for (int j = 0; j < filas.size(); j++) {
+                Cell celda = (Cell) filas.get(j);
                 //Tratamiento en caso de ser de tipo numérico
-                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                    System.out.print(cell.getNumericCellValue() + " ");
-                } else if (cell.getCellType() == Cell.CELL_TYPE_STRING) { //Tratamiento en caso de ser String
-                    System.out.print(cell.getRichStringCellValue() + " ");
-                } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) { //Tratamiento en caso de ser Booleano
-                    System.out.print(cell.getBooleanCellValue() + " ");
+                if (celda.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                    System.out.print(celda.getNumericCellValue() + " ");
+                } else if (celda.getCellType() == Cell.CELL_TYPE_STRING) { //Tratamiento en caso de ser String
+                    System.out.print(celda.getRichStringCellValue() + " ");
+                } else if (celda.getCellType() == Cell.CELL_TYPE_BOOLEAN) { //Tratamiento en caso de ser Booleano
+                    System.out.print(celda.getBooleanCellValue() + " ");
                 }
-                if (j < list.size() - 1) {
+                if (j < filas.size() - 1) {
                     System.out.print(" , ");
                 }
             }
