@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package testexcel;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import static testexcel.LecturaExcel.XLStoHASHSET;
 
 /**
- *
+ * Función principal del programa
  * @author david.fernandez
  */
 public class Main {
@@ -31,10 +27,10 @@ public class Main {
 //        leerExcelJXL(fich);
         String rutaxls = "E:\\SALIDAS\\BOM_MATERIALES\\opcion1.xls";
         long time_start, time_end;
-        time_start = System.currentTimeMillis();
+        
         //DatosExcel = leerExcelXls(rutaxls); // llamamos a la tarea
-        time_end = System.currentTimeMillis();
-        System.out.println("Tiempo:" + (time_end - time_start) + "milisegundos");
+        
+       
 
        // System.out.println(DatosExcel.toString());
 
@@ -44,12 +40,30 @@ public class Main {
 //           System.out.println("ELEMENTO: " + i + " _ " + DatosExcel.get(i));
 //       } 
         HashSet<Articulo> listadoArticulos;
-
+        time_start = System.currentTimeMillis();
         listadoArticulos = XLStoHASHSET(rutaxls);
-        
+        time_end = System.currentTimeMillis();
+        System.out.println("Tiempo:" + (time_end - time_start) + "milisegundos");
         ///Ya tenemos los articulos del excel capturados, ahora hay que procesarlos
         
+        //Buscamos uno de los elementos
+        Articulo art = new Articulo(1, "LeaderPin_E1000_1" ,"");
+        for(Articulo a: listadoArticulos){
+            if(a.getPartNumber() == null ? art.getPartNumber() == null : a.getPartNumber().equals(art.getPartNumber())){
+                System.out.println("_"+ a.toString());
+            }
+            
+//            if(a.getPartNumber() == null ? art.getPartNumber() == null : a.getPartNumber().equals(art.getPartNumber())){
+//                //Artículo encontrado, se muestra por pantalla
+//                System.out.println("->" + a.toString());
+//            }
+        }
         
+//        if(listadoArticulos.){
+//            System.out.println("TRUE");
+//        }else{
+//            System.out.println("FALSE");
+//        };
         
         
 

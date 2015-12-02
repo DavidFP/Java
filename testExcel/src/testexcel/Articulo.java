@@ -17,12 +17,14 @@ public class Articulo {
     float quantity;
     String partNumber;
     String nomenclature;
+    float price;
 
     public Articulo() {
         this.id = UUID.randomUUID();
         this.quantity = 0;
         this.partNumber = "";
         this.nomenclature = "";
+        this.price = 0;
     }
 
     public Articulo(float quantity, String partNumber, String nomenclature) {
@@ -30,6 +32,7 @@ public class Articulo {
         this.quantity = quantity;
         this.partNumber = partNumber;
         this.nomenclature = nomenclature;
+        this.price = 0;
     }
 
     public UUID getId() {
@@ -64,8 +67,19 @@ public class Articulo {
         this.nomenclature = nomenclature;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    
     @Override
     public String toString() {
-        return "Articulo{" + "id=" + id + ", quantity=" + quantity + ", partNumber=" + partNumber + ", nomenclature=" + nomenclature + '}';
+        return "Articulo{" + "id=" + id + ", quantity=" + quantity + ", partNumber=" + partNumber + ", nomenclature=" + nomenclature + ", price=" + price + '}';
     }
+
+    
 }
