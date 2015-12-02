@@ -1,8 +1,6 @@
 package testexcel;
 
-/**
- * Inclusión de las librerías
- */
+//Inclusión de las librerías
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +33,6 @@ public class LecturaExcel {
      * muestra por pantalla el número de hojas y el nombre de estas
      *
      * @param archivo , con la ruta del archivo Excel
-     *
      */
     public static void leerExcelJXL(File archivo) {
         try {
@@ -60,13 +57,16 @@ public class LecturaExcel {
         }
     }
 
-    public static HashSet XLStoHASHSET(String ruta) {
+    /**
+     * Función que le un excel y devuelve un hashset con el listado de artículos
+     * @param ruta , Path del fichero a leer
+     * @param primeraCelda , celda desde la que se empieza a leer
+     */
+    
+    public static HashSet XLStoHASHSET(String ruta, int primeraCelda) {
         //Estructura de datos donde se almacenan las filas
         HashSet<Articulo> hs = new HashSet<Articulo>();
-//        Articulo articulo1 = new Articulo(1, "Clamping Plate", "E100/E2");
-//        Articulo articulo2 = new Articulo(2, "sdf", "E220/al");
-//        hs.add(articulo1);
-//        hs.add(articulo2);
+
 
         try {
             //creamos el file input stream del fichero de entrada de los datos
@@ -99,9 +99,9 @@ public class LecturaExcel {
                 int ultima = sheet.getLastRowNum();
                 //Se establece el límite a 88 ya que es la celda donde comienza
                 //siempre el resumen del BOM de materiales
-                for (int u = ultima; u > 88; u--) {
+                for (int u = ultima; u > primeraCelda; u--) {
                     HSSFRow row = sheet.getRow(u);
-                   // System.out.println(row.getRowNum());
+                    // System.out.println(row.getRowNum());
                     String quantity = (String) row.getCell(0).toString();
                     float q = Float.parseFloat(quantity);
                     String partNum = row.getCell(1).toString();
@@ -109,7 +109,7 @@ public class LecturaExcel {
                     Articulo art = new Articulo(q, partNum, nomenclature);
                     hs.add(art);
 
-                        //System.out.println("Elemento añadido " + u);
+                    //System.out.println("Elemento añadido " + u);
                     //System.out.println("->"+ art.toString() + "<-");
 //                        System.out.println("COL A: " + row.getCell(0));
 //                        System.out.println("COL B: " + row.getCell(1));
@@ -142,6 +142,53 @@ public class LecturaExcel {
         return hs;
     }
 
+    public static void procesaEspacios(HashSet<Articulo> listado){
+        for(Articulo obj : listado){
+          obj.setPartNumber(obj.getPartNumber().replace(" ", ""));
+          obj.setNomenclature(obj.getNomenclature().replace(" ", ""));
+        }
+    }
+    /**
+     * Función para buscar un artículo dentro de un listado de artículos por Part Number
+     * @param  art, un objeto de tipo artículo
+     * @param  listadoArticulos, el listado donde se van a buscar
+     * @return valor entero con el número de ocurrencias de la cadena buscada
+     */
+    public static int buscarArticuloPartNumber(String art, HashSet<Articulo> listadoArticulos) {
+        int encontrado=0;
+        for (Articulo a : listadoArticulos) {
+            if(a.getPartNumber().contains(art)){
+                encontrado++;
+                System.out.println("->" + a.toString());
+            }
+        }
+        if(encontrado!=0)
+            System.out.println("Se han encontrado: " + encontrado);
+       return encontrado;
+    }
+    /**
+     * Función para buscar un artículo dentro de un listado de artículos por Nomenclature
+     * @param  art, un objeto de tipo artículo
+     * @param  listadoArticulos, el listado donde se van a buscar
+     * @return valor entero con el número de ocurrencias de la cadena buscada
+     */
+    public static int buscarArticuloNomenclature(String art, HashSet<Articulo> listadoArticulos) {
+        int encontrado=0;
+        for (Articulo a : listadoArticulos) {
+            if(a.getNomenclature().contains(art)){
+                encontrado++;
+                System.out.println("->" + a.toString());
+            }
+        }
+        if(encontrado!=0)
+            System.out.println("Se han encontrado: " + encontrado);
+       return encontrado;
+    }
+
+    /**
+     * Función que lee los elementos de un fichero xls
+     * @param rutaxls , path del fichero xls
+     */
     public static List leerExcelXls(String rutaxls) {
         List sheetData = new ArrayList();
         InputStream is = null;
@@ -169,10 +216,6 @@ public class LecturaExcel {
                 System.out.println("Num. Filas: " + totalRow);
                 int ultimaFila = sheet.getLastRowNum();
                 System.out.println("Ultima fila: " + ultimaFila);
-
-                for (int r = ultimaFila; r > 88; r--) {
-
-                }
 
                 /**
                  * Cuando hay un objeto en la hoja, lo manejamos con un iterador
@@ -205,7 +248,7 @@ public class LecturaExcel {
      *
      * @param datosHoja , lista de datos de la hoja
      */
-    private static void showExelData(List datosHoja) {
+    private static void muestraDatosExcel(List datosHoja) {
         /**
          * Itera y muestra por consola los datos
          */
