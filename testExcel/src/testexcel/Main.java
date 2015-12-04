@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import static testexcel.LecturaExcel.XLStoHASHSET;
+import static testexcel.LecturaExcel.XLStoHASHSETCatalogo;
+import static testexcel.LecturaExcel.buscarArticuloNomenclature;
 import static testexcel.LecturaExcel.buscarArticuloPartNumber;
 import static testexcel.LecturaExcel.procesaEspacios;
 
@@ -40,14 +42,25 @@ public class Main {
         
         procesaEspacios(listadoArticulos);
         
-        String palabra = "Eye";
+        String palabra = "plate";
         palabra = palabra.replace(" ", "");
-        if(buscarArticuloPartNumber(palabra, listadoArticulos)==0)
-            if(buscarArticuloPartNumber(palabra, listadoArticulos)==0)
-                System.out.println(":-( No se ha encontrado nada...");
-        
+        List<Articulo> encontrados = buscarArticuloPartNumber(palabra, listadoArticulos);
+        if(encontrados.isEmpty()){
+            System.out.println(":-( No se ha encontrado nada...");
+        }else{
+            System.out.println("Se han encontrado " + encontrados.size() + " articulos");
+            for(Articulo a: encontrados)
+                System.out.println(a.toString());
+        }
+        HashSet<MeusburguerProduct> articulosMeus = new HashSet<>();
+        String rutaMeus = "E:\\BD\\catalogo1.xls";
+        time_start = System.currentTimeMillis();
+        articulosMeus =XLStoHASHSETCatalogo(rutaMeus, 0);
+        time_end = System.currentTimeMillis();
+        System.out.println("Tiempo:" + (time_end - time_start) + "milisegundos en leer la BD de " + articulosMeus.size()+ "elementos");
+
         //Buscamos uno de los elementos
-        Articulo art = new Articulo(1, "LeaderPin_E1000_1", "");
+        //Articulo art = new Articulo(1, "LeaderPin_E1000_1", "");
 
 
 }

@@ -59,19 +59,58 @@ public class LecturaExcel {
 
     /**
      * Función que le un excel y devuelve un hashset con el listado de artículos
+     *
      * @param ruta , Path del fichero a leer
      * @param primeraCelda , celda desde la que se empieza a leer
      */
-    
     public static HashSet XLStoHASHSET(String ruta, int primeraCelda) {
         //Estructura de datos donde se almacenan las filas
         HashSet<Articulo> hs = new HashSet<Articulo>();
 
-
         try {
             //creamos el file input stream del fichero de entrada de los datos
             InputStream fis = new FileInputStream(new File(ruta));
+            // Crea un objeto excel desde el sistema de ficheros
+            HSSFWorkbook workbook = new HSSFWorkbook(fis);
+            
+// Obtiene la primera hoja del libro 
+            int numHojas = workbook.getNumberOfSheets();
+            int i = 0;
+//Exploramos todas las hojas del libro
+            while (i < numHojas) {
+                HSSFSheet sheet = workbook.getSheetAt(i);
 
+                //Muestra la hoja actual en la que estamos
+                System.out.println("HOJA " + (i + 1));
+                //Obtiene el número total de celdas
+                int totalRow = sheet.getPhysicalNumberOfRows();
+                System.out.println("Num. Filas: " + totalRow);
+                /*RECORRER DE FIN A INICIO LA HOJA*/
+                int ultima = sheet.getLastRowNum();
+                for (int u = ultima; u > primeraCelda; u--) {
+                    HSSFRow row = sheet.getRow(u);
+                    // System.out.println(row.getRowNum());
+                    String quantity = (String) row.getCell(0).toString();
+                    float q = Float.parseFloat(quantity);
+                    String partNum = row.getCell(1).toString();
+                    String nomenclature = row.getCell(2).toString();
+                    Articulo art = new Articulo(q, partNum, nomenclature);
+                    hs.add(art);
+                }
+                i++;
+            }
+        } catch (IOException e) {
+        }
+        return hs;
+    }
+
+    public static HashSet XLStoHASHSETCatalogo(String ruta, int primeraCelda) {
+        //Estructura de datos donde se almacenan las filas
+        HashSet<MeusburguerProduct> hs = new HashSet<>();
+        
+        try {
+            //creamos el file input stream del fichero de entrada de los datos
+            InputStream fis = new FileInputStream(new File(ruta));
             /**
              * Crea un objeto excel desde el sistema de ficheros
              */
@@ -99,94 +138,83 @@ public class LecturaExcel {
                 int ultima = sheet.getLastRowNum();
                 //Se establece el límite a 88 ya que es la celda donde comienza
                 //siempre el resumen del BOM de materiales
-                for (int u = ultima; u > primeraCelda; u--) {
+                for (int u = 1; u < ultima; u++) {
                     HSSFRow row = sheet.getRow(u);
-                    // System.out.println(row.getRowNum());
-                    String quantity = (String) row.getCell(0).toString();
-                    float q = Float.parseFloat(quantity);
-                    String partNum = row.getCell(1).toString();
-                    String nomenclature = row.getCell(2).toString();
-                    Articulo art = new Articulo(q, partNum, nomenclature);
-                    hs.add(art);
-
-                    //System.out.println("Elemento añadido " + u);
-                    //System.out.println("->"+ art.toString() + "<-");
-//                        System.out.println("COL A: " + row.getCell(0));
-//                        System.out.println("COL B: " + row.getCell(1));
-//                        System.out.println("COL C: " + row.getCell(2));
+                    String terminoBusqueda = (String) row.getCell(0).toString();
+                    String SKU = (String) row.getCell(1).toString();
+                    String referencia = (String) row.getCell(2).toString();
+                    String descripcion = (String) row.getCell(3).toString();
+                    String pe = (String) row.getCell(4).toString();
+                    Float peso = Float.parseFloat(pe);
+                    
+                    String pre = (String) row.getCell(5).toString();
+                    Float precio = Float.parseFloat(pre);
+                    String grupo = (String) row.getCell(6).toString();
+                    System.out.println("R: - " +terminoBusqueda+ " => " +  SKU+ " => "  + referencia + " => " + descripcion + " => " + peso + " => " + precio + " => " + grupo);
+                    MeusburguerProduct mp = new MeusburguerProduct(terminoBusqueda, SKU, referencia, descripcion, peso, precio, grupo);
+                    hs.add(mp);
+                    System.out.println("ARTICULO: " + u);
                 }
-
-                /**
-                 * Cuando hay un objeto en la hoja, lo manejamos con un iterador
-                 * para la hoja con rows y para cada row con sus Cells
-                 * asociadas. Almacenamos los datos en un ArrayList que podemos
-                 * manejar
-                 */
-//                    Iterator rows = sheet.rowIterator();
-//                    while (rows.hasNext()) {
-//                        HSSFRow row = (HSSFRow) rows.next();
-//                        Iterator cells = row.cellIterator();
-//                        List data = new ArrayList();
-//                        while (cells.hasNext()) {
-//                            HSSFCell cell = (HSSFCell) cells.next();
-//                            //System.out.println("Añadiendo Celda: " + cell.toString());
-//                            data.add(cell);
-//                        }
-//                     //   sheetData.add(data);
-//                    }
-                i++;
+            i++;
             }
         } catch (IOException e) {
         }
-
         return hs;
     }
 
-    public static void procesaEspacios(HashSet<Articulo> listado){
-        for(Articulo obj : listado){
-          obj.setPartNumber(obj.getPartNumber().replace(" ", ""));
-          obj.setNomenclature(obj.getNomenclature().replace(" ", ""));
+    public static void procesaEspacios(HashSet<Articulo> listado) {
+        for (Articulo obj : listado) {
+            obj.setPartNumber(obj.getPartNumber().replace(" ", ""));
+            obj.setNomenclature(obj.getNomenclature().replace(" ", ""));
         }
     }
+
     /**
-     * Función para buscar un artículo dentro de un listado de artículos por Part Number
-     * @param  art, un objeto de tipo artículo
-     * @param  listadoArticulos, el listado donde se van a buscar
-     * @return valor entero con el número de ocurrencias de la cadena buscada
+     * Función para buscar un artículo dentro de un listado de artículos por
+     * Part Number
+     *
+     * @param art, un objeto de tipo artículo
+     * @param listadoArticulos, el listado donde se van a buscar
+     * @return List, de elementos que ha encontrado con el cirterio de busqueda
      */
-    public static int buscarArticuloPartNumber(String art, HashSet<Articulo> listadoArticulos) {
-        int encontrado=0;
+    public static List<Articulo> buscarArticuloPartNumber(String art, HashSet<Articulo> listadoArticulos) {
+        List<Articulo> encontrado = new ArrayList<Articulo>();
+        //pasamos a minuscula el criterio de busqueda para encontrar el articulo
+        art = art.toLowerCase();
         for (Articulo a : listadoArticulos) {
-            if(a.getPartNumber().contains(art)){
-                encontrado++;
-                System.out.println("->" + a.toString());
+            if (a.getPartNumber().toLowerCase().contains(art)) {
+                encontrado.add(a);
+                //System.out.println("->" + a.toString());
             }
         }
-        if(encontrado!=0)
-            System.out.println("Se han encontrado: " + encontrado);
-       return encontrado;
+        return encontrado;
     }
+
     /**
-     * Función para buscar un artículo dentro de un listado de artículos por Nomenclature
-     * @param  art, un objeto de tipo artículo
-     * @param  listadoArticulos, el listado donde se van a buscar
+     * Función para buscar un artículo dentro de un listado de artículos por
+     * Nomenclature
+     *
+     * @param art, un objeto de tipo artículo
+     * @param listadoArticulos, el listado donde se van a buscar
      * @return valor entero con el número de ocurrencias de la cadena buscada
      */
     public static int buscarArticuloNomenclature(String art, HashSet<Articulo> listadoArticulos) {
-        int encontrado=0;
+        int encontrado = 0;
         for (Articulo a : listadoArticulos) {
-            if(a.getNomenclature().contains(art)){
+            if (a.getNomenclature().contains(art)) {
                 encontrado++;
                 System.out.println("->" + a.toString());
             }
         }
-        if(encontrado!=0)
+        if (encontrado != 0) {
             System.out.println("Se han encontrado: " + encontrado);
-       return encontrado;
+        }
+        return encontrado;
     }
 
     /**
      * Función que lee los elementos de un fichero xls
+     *
      * @param rutaxls , path del fichero xls
      */
     public static List leerExcelXls(String rutaxls) {
