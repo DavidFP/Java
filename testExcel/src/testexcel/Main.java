@@ -3,11 +3,9 @@ package testexcel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import static testexcel.LecturaExcel.XLStoHASHSET;
 import static testexcel.LecturaExcel.XLStoHASHSETCatalogo;
-import static testexcel.LecturaExcel.buscarArticuloNomenclature;
 import static testexcel.LecturaExcel.buscarArticuloPartNumber;
 import static testexcel.LecturaExcel.procesaEspacios;
 
